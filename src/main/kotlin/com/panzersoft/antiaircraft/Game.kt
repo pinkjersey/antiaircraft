@@ -46,14 +46,35 @@ class Game(val commander: Commander) {
         frame.pack()
     }
 
+    fun getEvents(events: List<EventMaker.Event>, start: Long, end: Long) : List<EventMaker.Event> {
+        return events.filter {
+            start <= it.start && it.start < end
+        }
+    }
+
     fun run() {
+        val events = EventMaker.make(commander.orders)
+        var startTime = 0L
 
         while(true){
+            val pevents = getEvents(events, startTime, startTime + tickSize)
+            pevents.forEach {
+                when (it.type) {
+                    EventMaker.EventType.AIM -> {
+                        antiAircraft.model.targetAngle = it.angle
+                    }
+                    EventMaker.EventType.FIRE -> {
+                        bullet.reset(it.angle)
+                    }
+                }
+            }
+
             objects.forEach {
                 it.move(tickSize)
             }
             Thread.sleep(tickSize)
             frame.repaint();
+            startTime += tickSize
 
         }
     }

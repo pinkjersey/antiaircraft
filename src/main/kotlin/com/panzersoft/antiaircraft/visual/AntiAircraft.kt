@@ -13,21 +13,18 @@ import java.lang.Math.*
 
 class AntiAircraft(val commander: Commander) : GameObject() {
     internal var model = GameParameters.makeAntiAircraft()
-    internal var location = RealPoint(realWidth / 2, 0.0)
-    internal var angle = 45.0
-    var targetAngle = 60
-    internal val length = 100
+    internal val length = 50
 
     fun endPoint() : RealPoint {
-        val rad = toRadians(angle);
-        val ret = RealPoint(location.x + length * cos(rad),
-                location.y + length * sin(rad))
+        val rad = toRadians(model.angle);
+        val ret = RealPoint(model.location.x + length * cos(rad),
+                model.location.y + length * sin(rad))
         return ret
     }
 
     override fun paintComponent(g: Graphics) {
         g.color = Color.RED
-        val p = location.toPoint()
+        val p = model.location.toPoint()
         val p2 = endPoint().toPoint()
         g.drawLine(p.x, p.y, p2.x, p2.y)
     }
@@ -36,11 +33,6 @@ class AntiAircraft(val commander: Commander) : GameObject() {
      * @param elapsedTime time elapsed in milliseconds
      */
     override fun move(elapsedTime: Long) {
-        if (targetAngle > angle) {
-            angle += 1
-        } else if (targetAngle < angle) {
-            angle -= 1
-        }
-        if (angle >= 360) { angle -= 360 }
+        model.move(elapsedTime)
     }
 }

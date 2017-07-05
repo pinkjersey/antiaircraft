@@ -33,7 +33,8 @@ fun main(args: Array<String>) {
     var generation = 0.rangeTo(99).map {
         Commander(OrderMaker.make(), "R")
     }
-    0.rangeTo(999).map {
+    val numGenerations = 3
+    0.rangeTo(numGenerations).map {
 
         if (obestSet) {
             println("*** Generation $it Number to beat $obest ***")

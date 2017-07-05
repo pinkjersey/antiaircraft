@@ -14,6 +14,7 @@ import com.panzersoft.antiaircraft.orders.AimOrder
 import com.panzersoft.antiaircraft.orders.Order
 import com.panzersoft.antiaircraft.orders.WaitOrder
 import com.panzersoft.antiaircraft.visual.GameObject
+import com.panzersoft.antiaircraft.visual.GameObject.Companion.calcDistance
 
 
 import java.lang.Math.*
@@ -24,24 +25,12 @@ import java.util.concurrent.ThreadLocalRandom
  */
 
 class Commander(val orders: List<Order>, val type: String) {
-
-    constructor(p1: Commander, p2: Commander) : this(mate(p1.orders, p2.orders), "(" + p1.type + "<->" + p2.type + ")") {
-
-    }
-
-
+    constructor(p1: Commander, p2: Commander) :
+            this(mate(p1.orders, p2.orders), "(" + p1.type + "<->" + p2.type + ")")
 
     data class TimeAndDistance(val time: Long, val dist: Double)
 
-
-
     class NotLoadedException : Exception("Anti-Aircraft gun not loaded")
-
-    fun calcDistance(objects: Pair<GameObject.RealPoint, GameObject.RealPoint>) : Double {
-        val diffx = objects.first.x - objects.second.x
-        val diffy = objects.first.y - objects.second.y
-        return sqrt(pow(diffx, 2.0) + pow(diffy, 2.0))
-    }
 
     fun mutate() : Commander {
         return Commander(OrderMaker.mutate(orders), type + "M")
@@ -116,17 +105,18 @@ class Commander(val orders: List<Order>, val type: String) {
                             if (timeAndDistance.dist < 5.0) {// hit!
                                 print("HIT!", printInfo)
                                 // great job, 100%
-                                return 1000.0
-                            }
-                            val maxDistance = 500
-                            if (timeAndDistance.dist > 500) {
-                                val extra = 5- ((timeAndDistance.dist - 500.0) / 100.0).toLong()
-                                print("Fired, but missed by a lot (${timeAndDistance.dist}) ${extra} point", printInfo)
-                                fitness += extra
+                                fitness += 1000.0
                             } else {
-                                val points = -499.0 / maxDistance * timeAndDistance.dist + 500.0
-                                print("An attempt was made ${timeAndDistance.dist} / ${maxDistance} Points= ${points}", printInfo)
-                                fitness += points
+                                val maxDistance = 500
+                                if (timeAndDistance.dist > 500) {
+                                    val extra = 5 - ((timeAndDistance.dist - 500.0) / 100.0).toLong()
+                                    print("Fired, but missed by a lot (${timeAndDistance.dist}) ${extra} point", printInfo)
+                                    fitness += extra
+                                } else {
+                                    val points = -499.0 / maxDistance * timeAndDistance.dist + 500.0
+                                    print("An attempt was made ${timeAndDistance.dist} / ${maxDistance} Points= ${points}", printInfo)
+                                    fitness += points
+                                }
                             }
                             aircraft.move(timeAndDistance.time)
                             antiAir.move(timeAndDistance.time)
@@ -173,6 +163,7 @@ class Commander(val orders: List<Order>, val type: String) {
                                 fitness += 1.0
                                 priorAim = true
                             }
+                            antiAir.targetAngle = aim.acceptable
                             aircraft.move(millisNeeded)
                             antiAir.move(millisNeeded)
                             time += millisNeeded
