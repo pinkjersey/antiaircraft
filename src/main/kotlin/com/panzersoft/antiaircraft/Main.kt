@@ -3,7 +3,22 @@ package com.panzersoft.antiaircraft
 import java.util.concurrent.ThreadLocalRandom
 
 /**
- * Created by mdozturk on 7/4/17.
+ * This is a simple simulation of an aircraft flying over an AA gun. The commander of the gun has to try to
+ * shoot down the aircraft. The commander's logic is generated using evolutionary computing.
+ *
+ * @author Mustafa D. Ozturk
+ *
+ */
+
+/**
+ * Creates a new generation of *commanders*.
+ *
+ * The best of the prior generation are kept, some mutants and offspring are created, the remaining spots are
+ * filled with random commanders.
+ *
+ * @property prior the prior generation.
+ * @property order the order information of the prior generation.
+ * @return new generation of commanders.
  */
 
 fun newGeneration(prior: List<Commander>, order: List<Pair<Int, Double>>) : List<Commander> {
@@ -27,6 +42,15 @@ fun newGeneration(prior: List<Commander>, order: List<Pair<Int, Double>>) : List
     return best + children + mutants + random
 }
 
+/**
+ * The main entry point into the application.
+ *
+ * Runs the evolutionary algorithm for a set number of generations to
+ * get the best commander. Then uses that commander to run the visual simulation.
+ *
+ * @property args command line arguments to the application. Not used.
+ */
+
 fun main(args: Array<String>) {
     var obest = 0.0
     var obestSet = false
@@ -35,7 +59,6 @@ fun main(args: Array<String>) {
     }
     val numGenerations = 3
     0.rangeTo(numGenerations).map {
-
         if (obestSet) {
             println("*** Generation $it Number to beat $obest ***")
         } else {

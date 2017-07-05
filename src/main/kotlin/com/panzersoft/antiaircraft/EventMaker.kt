@@ -10,7 +10,9 @@ import com.panzersoft.antiaircraft.visual.GameObject
 import com.panzersoft.antiaircraft.visual.GameObject.Companion.calcDistance
 
 /**
- * Created by mozturk on 7/5/2017.
+ * Creates events from orders.
+ *
+ * Orders are actions taken by commanders, events are visual changes that occur because of those orders.
  */
 
 object EventMaker {
