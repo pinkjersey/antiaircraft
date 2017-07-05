@@ -48,7 +48,7 @@ fun newGeneration(prior: List<Commander>, order: List<Pair<Int, Double>>) : List
  * Runs the evolutionary algorithm for a set number of generations to
  * get the best commander. Then uses that commander to run the visual simulation.
  *
- * @property args command line arguments to the application. Not used.
+ * @property args the first argument (optional) is the number of generations to run
  */
 
 fun main(args: Array<String>) {
@@ -57,7 +57,7 @@ fun main(args: Array<String>) {
     var generation = 0.rangeTo(99).map {
         Commander(OrderMaker.make(), "R")
     }
-    val numGenerations = 3
+    val numGenerations = if (args.size == 1) { args[0].toInt() } else { 3 }
     0.rangeTo(numGenerations).map {
         if (obestSet) {
             println("*** Generation $it Number to beat $obest ***")
